@@ -6,21 +6,16 @@ const QuotationItemSchema = new mongoose.Schema({
   qty: Number,
   baseUnit: String,
   orderUnit: String,
-
   unit: String,
-  vendorId: String,  
-  vendorName: String ,
-  
-
-materialgroup: String,
-
-
-deliveryDate: Date,
+  vendorId: String,
+  vendorName: String,
+  materialgroup: String,
+  deliveryDate: Date,
   price: Number
 });
 
 const QuotationSchema = new mongoose.Schema({
-    quotationNumber: { type: String, unique: true },
+  quotationNumber: { type: String, unique: true },
   indentId: String,
   categoryId: String,
   rfqCategoryId: String,
@@ -28,13 +23,13 @@ const QuotationSchema = new mongoose.Schema({
   vendorName: String,
   quotationReference: String, // New field for quotation reference
   vnNo: String,
-  validityDate:Date,
+  validityDate: Date,
   companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
-   financialYear:String,
+  financialYear: String,
   note: String,
   location: String,
   buyerGroup: String,
-   totalPrice: { type: Number, default: 0 }, // New field for total price
+  totalPrice: { type: Number, default: 0 }, // New field for total price
   items: [QuotationItemSchema]
 }, { timestamps: true });
 

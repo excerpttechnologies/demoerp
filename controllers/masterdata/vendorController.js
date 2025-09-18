@@ -96,7 +96,6 @@ exports.getVendorById = async (req, res) => {
 
     // Filter by companyId and financialYear if provided
     if (companyId) filter.companyId = companyId;
-    if (financialYear) filter.financialYear = financialYear;
 
     // If it's a valid ObjectId, include _id in the OR filter
     if (mongoose.Types.ObjectId.isValid(id)) {

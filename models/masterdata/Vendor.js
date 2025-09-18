@@ -23,6 +23,7 @@ const vendorSchema = new mongoose.Schema({
   contactNo: String,
   contactname: String,
   email: String,
+  gstin:String,
   isDeleted: {
     type: Boolean,
     default: false

@@ -16,6 +16,7 @@ const customerSchema = new mongoose.Schema({
   contactNo: String,
   name: String,
   email: String,
+  gstin:String,
   isDeleted: {
     type: Boolean,
     default: false

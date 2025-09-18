@@ -15,7 +15,7 @@ async function generateSONumber(categoryId) {
 
     // Find all existing Sales Orders for this category
     const existingSOs = await SalesOrder.find({
-      categoryId, soNumberType: 'internal'
+      categoryId
     }).select('soNumber');
 
     let nextNumber = category.rangeFrom;
