@@ -5,7 +5,7 @@ exports.createTax = async (req, res) => {
   try {
     const { taxCode, taxName, cgst, sgst, igst, companyId, financialYear } = req.body;
     console.log("Creating tax entry:", req.body);
-    if (!taxCode || !taxName || !cgst || !sgst  || !companyId ) {
+    if (!taxCode || !taxName || !companyId ) {
       return res.status(400).json({ error: 'All fields are required' });
     }
 

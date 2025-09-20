@@ -6,6 +6,7 @@ const locationSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    code:String,
     address: {
         type: String,
         trim: true

@@ -29,27 +29,21 @@ exports.createCustomerPrice = async (req, res) => {
     const { categoryId, customerId, materialId, unit, bum, price, orderUnit, salesGroup, taxId, tandc, companyId, financialYear } = req.body;
 
     // Validate required fields (including price)
-    if (!categoryId || !customerId || !materialId || !unit || !bum || !price || !orderUnit || !salesGroup) {
+    if (!categoryId || !customerId || !materialId || !unit || !bum || !price || !salesGroup) {
       return res.status(400).json({ message: 'All required fields must be filled.' });
     }
+    if (!req.body._id) {
+  delete req.body._id;
+}
 
+    console.log(req.body)
     // Create a clean data object without the _id field for new records
     const dataToSave = {
-      categoryId,
-      customerId,
-      materialId,
-      unit,
-      bum,
-      price,
-      orderUnit,
-      salesGroup,
-      taxId: taxId || null,
-      tandc,
-      companyId,
-      financialYear
+      ...req.body,
+      taxId: taxId || null
     };
 
-    const newEntry = new CustomerPriceList(dataToSave);
+    const newEntry = new CustomerPriceList(req.body);
     const savedEntry = await newEntry.save();
     
     res.status(201).json({ 

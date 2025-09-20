@@ -430,7 +430,7 @@ exports.createPO = async (req, res) => {
 exports.getAllPOs = async (req, res) => {
   try {
     const { companyId } = req.query;
-
+    console.log("asdas",companyId)
     const filter = {};
     if (companyId) filter.companyId = companyId;
 
@@ -438,9 +438,9 @@ exports.getAllPOs = async (req, res) => {
     const pos = await PurchaseOrder.find(filter)
       .populate('categoryId quotationId companyId')
       .sort({ createdAt: -1 }); // Sort by newest first
-      
+       console.log("pos", pos.length, "records found");
     res.status(200).json(pos);
-    console.log("pos", pos.length, "records found");
+   
   } catch (err) {
     console.error('Error fetching POs:', err);
     res.status(500).json({ error: 'Failed to fetch purchase orders' });

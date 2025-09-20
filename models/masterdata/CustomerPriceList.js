@@ -7,7 +7,8 @@ const customerPriceListSchema = new mongoose.Schema({
   unit: { type: String, required: true },
   bum: { type: Number, required: true },
   price: { type: Number, required: true, min: 0 }, // Added price field
-  orderUnit: { type: String, required: true },
+  contactperson: { type: String, required: true },
+  contactnumber: String,
   salesGroup: { type: String, required: true },
   taxId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tax', default: null },
   tandc: String,

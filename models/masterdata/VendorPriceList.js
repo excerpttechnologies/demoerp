@@ -5,13 +5,13 @@ const vendorPriceListSchema = new mongoose.Schema({
   vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
   materialId: { type: mongoose.Schema.Types.ObjectId, ref: 'Material', required: true },
   unit: { type: String, required: true }, // location
-  bum: { type: Number, required: true },
-  buyer:{type:String},
+  bum: { type: String, required: true },
+  buyer: { type: String },
   price: { type: Number, required: true },
-  taxId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tax' } ,
-  orderUnit: { type: Number, required: true },
-   companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
-   financialYear:String
+  taxId: { type: mongoose.Schema.Types.ObjectId, ref: 'Tax' },
+  contactperson: { type: String, required: true },
+  contactnumber:String,
+  companyId: { type: mongoose.Schema.Types.ObjectId, ref: 'Company' },
 
 }, { timestamps: true });
 
