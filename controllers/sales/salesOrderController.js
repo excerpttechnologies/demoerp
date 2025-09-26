@@ -113,3 +113,93 @@ exports.getAllSalesOrders = async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch sales orders' });
   }
 };
+// Add this method to your existing controller
+
+exports.updateSalesOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updateData = req.body;
+
+    // Remove fields that shouldn't be updated directly
+    delete updateData._id;
+    delete updateData.__v;
+    delete updateData.createdAt;
+    delete updateData.updatedAt;
+
+    // Find and update the sales order
+    const updatedOrder = await SalesOrder.findByIdAndUpdate(
+      id,
+      { 
+        ...updateData,
+        updatedBy: req.user?._id // If you have user authentication
+      },
+      { 
+        new: true, // Return the updated document
+        runValidators: true // Run mongoose validators
+      }
+    );
+
+    if (!updatedOrder) {
+      return res.status(404).json({ error: 'Sales Order not found' });
+    }
+
+    console.log('Sales Order updated successfully:', updatedOrder.soNumber);
+
+    res.json(updatedOrder);
+  } catch (error) {
+    console.error('Error updating sales order:', error);
+    res.status(500).json({ 
+      error: 'Failed to update sales order',
+      details: error.message 
+    });
+  }
+};
+
+// Add this method to delete a sales order (optional)
+exports.deleteSalesOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // Soft delete - mark as deleted instead of actually removing
+    const deletedOrder = await SalesOrder.findByIdAndUpdate(
+      id,
+      { 
+        isDeleted: true,
+        deletedAt: new Date(),
+        updatedBy: req.user?._id
+      },
+      { new: true }
+    );
+
+    if (!deletedOrder) {
+      return res.status(404).json({ error: 'Sales Order not found' });
+    }
+
+    console.log('Sales Order soft deleted:', deletedOrder.soNumber);
+    res.json({ message: 'Sales Order deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting sales order:', error);
+    res.status(500).json({ 
+      error: 'Failed to delete sales order',
+      details: error.message 
+    });
+  }
+};
+
+// Also update your getAllSalesOrders method to exclude deleted orders
+exports.getAllSalesOrders = async (req, res) => {
+  const { companyId } = req.query;
+  if (!companyId) {
+    return res.status(400).json({ error: 'companyId is required' });
+  }
+  try {
+    const orders = await SalesOrder.find({ 
+      companyId,
+      isDeleted: { $ne: true } // Exclude soft-deleted orders
+    }).sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    console.error('Error fetching sales orders:', err);
+    res.status(500).json({ error: 'Failed to fetch sales orders' });
+  }
+};

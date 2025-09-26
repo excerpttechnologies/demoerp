@@ -5,5 +5,5 @@ const salesOrderController = require('../../controllers/sales/salesOrderControll
 
 router.post('/sales-orders', salesOrderController.createSalesOrder);
 router.get('/sales-orders', salesOrderController.getAllSalesOrders);
-
+router.put('/sales-orders/:id', salesOrderController.updateSalesOrder);
 module.exports = router;
