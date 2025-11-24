@@ -2,12 +2,26 @@ const Employee = require('../../models/hrms/employee');
 const Attendance = require('../../models/hrms/Attendance');
 const googleSheetsService = require('../../services/googleSheetsService');
 
+// 🔓 Whitelist of employee IDs who can bypass IP restriction
+const WHITELISTED_EMPLOYEE_IDS = [
+  '68be61485e666f27c9d4791e',  // Sreevatsa B R
+  '68be609a5e666f27c9d47918',  // Another employee
+  // Add more employee ObjectIds here
+];
+
+// 🔒 IP Restriction Middleware with User Whitelist
 const checkIPRestriction = async (req, res, next) => {
-  // Check if user is whitelisted (from request body or auth header)
-  const username = req.body.employeeObjectId || 
-                   req.user?.username || 
-                   req.headers['x-username'];
-  if (username && (username==='68be61485e666f27c9d4791e' || username==='68be609a5e666f27c9d47918')) {
+  // Get employeeId from request body (this is the MongoDB ObjectId)
+  const employeeId = req.body.employeeId || req.params.employeeObjectId;
+  
+  console.log('========== IP RESTRICTION CHECK ==========');
+  console.log('📋 Employee ID from request:', employeeId);
+  console.log('🔓 Whitelisted IDs:', WHITELISTED_EMPLOYEE_IDS.join(', '));
+
+  // Check if employee is whitelisted
+  if (employeeId && WHITELISTED_EMPLOYEE_IDS.includes(employeeId)) {
+    console.log(`✅ WHITELISTED: Employee ${employeeId} can access from any IP`);
+    console.log('==========================================\n');
     return next();
   }
 
@@ -26,6 +40,7 @@ const checkIPRestriction = async (req, res, next) => {
   const localhostIPs = ['127.0.0.1', '::1', 'localhost'];
   if (localhostIPs.includes(cleanIP)) {
     console.log(`🏠 Localhost access allowed: ${cleanIP}`);
+    console.log('==========================================\n');
     return next();
   }
 
@@ -33,17 +48,19 @@ const checkIPRestriction = async (req, res, next) => {
   const allowedSubnet = /^49\.207\.\d{1,3}\.\d{1,3}$/;
   
   if (!allowedSubnet.test(cleanIP)) {
-    console.log(`🚫 Access denied for IP: ${cleanIP}${username ? ` (user: ${username})` : ''}`);
+    console.log(`🚫 ACCESS DENIED for IP: ${cleanIP}${employeeId ? ` (Employee: ${employeeId})` : ''}`);
+    console.log('==========================================\n');
     return res.status(403).json({
       success: false,
       error: "Access Denied",
       message: "Attendance marking is restricted to authorized network only",
       yourIP: cleanIP,
-      allowedNetwork: "49.207.X.X or whitelisted users"
+      allowedNetwork: "49.207.X.X or whitelisted employees"
     });
   }
 
   console.log(`✅ IP authorized: ${cleanIP}`);
+  console.log('==========================================\n');
   next();
 };
 
@@ -256,7 +273,9 @@ const attendanceController = {
     }
   }],
 
-  // Get attendance records with filters (NO IP RESTRICTION - Read only)
+  // ... (keep all your other methods: getAttendanceRecords, getAllEmployeeRecords, etc.)
+  // They remain exactly the same
+
   getAttendanceRecords: async (req, res) => {
     try {
       const { date, employeeId } = req.query;
@@ -302,11 +321,9 @@ const attendanceController = {
     }
   },
 
-  // Get all employee attendance records (NO IP RESTRICTION - Read only)
   getAllEmployeeRecords: async (req, res) => {
     try {
       const records = await Attendance.find({}).sort({ dateObject: -1 }).lean();
-
       let allEmployeeRecords = [];
 
       records.forEach(attendanceDoc => {
@@ -333,23 +350,14 @@ const attendanceController = {
     }
   },
 
-  // Get today's attendance (NO IP RESTRICTION - Read only)
   getTodayAttendance: async (req, res) => {
     try {
-      console.log('=== getTodayAttendance called ===');
-
       const today = new Date();
       const todayString = today.getFullYear() + '-' +
         String(today.getMonth() + 1).padStart(2, '0') + '-' +
         String(today.getDate()).padStart(2, '0');
 
-      console.log('Searching for date:', todayString);
-
-      const attendanceDoc = await Attendance.findOne({
-        date: todayString
-      }).exec();
-
-      console.log('Query result:', attendanceDoc ? 'Found' : 'Not found');
+      const attendanceDoc = await Attendance.findOne({ date: todayString }).exec();
 
       if (!attendanceDoc) {
         return res.json({
@@ -362,8 +370,6 @@ const attendanceController = {
         });
       }
 
-      console.log(`Found today's attendance with ${attendanceDoc.employees.length} employees`);
-
       res.json({
         date: attendanceDoc.date,
         dateObject: attendanceDoc.dateObject,
@@ -374,7 +380,6 @@ const attendanceController = {
         updatedAt: attendanceDoc.updatedAt,
         _id: attendanceDoc._id
       });
-
     } catch (err) {
       console.error('Error in getTodayAttendance:', err.message);
       res.status(500).json({
@@ -384,11 +389,9 @@ const attendanceController = {
     }
   },
 
-  // Get attendance by specific date (NO IP RESTRICTION - Read only)
   getAttendanceByDate: async (req, res) => {
     try {
       const { date } = req.params;
-
       const attendanceRecord = await Attendance.findOne({ date: date });
 
       if (!attendanceRecord) {
@@ -397,8 +400,6 @@ const attendanceController = {
           date: date
         });
       }
-
-      console.log(`📊 Attendance for ${date}: ${attendanceRecord.employees.length} employee records`);
 
       res.json({
         date: attendanceRecord.date,
@@ -418,19 +419,14 @@ const attendanceController = {
     }
   },
 
-  // Get database statistics (NO IP RESTRICTION - Read only)
   getStats: async (req, res) => {
     try {
       const totalEmployees = await Employee.countDocuments();
       const totalAttendanceDays = await Attendance.countDocuments();
-
       const allEmployees = await Employee.find({}, 'firstName lastName descriptor').lean();
       const validEmployees = allEmployees.filter(emp =>
-        emp.descriptor &&
-        Array.isArray(emp.descriptor) &&
-        emp.descriptor.length === 128
+        emp.descriptor && Array.isArray(emp.descriptor) && emp.descriptor.length === 128
       );
-
       const todaysAttendance = await Attendance.getTodaysAttendance();
 
       res.json({
@@ -455,21 +451,12 @@ const attendanceController = {
     }
   },
 
-  // Update attendance record (WITH IP RESTRICTION BUT WHITELISTED USERS BYPASS)
   updaterecord: [checkIPRestriction, async (req, res) => {
     try {
       const { date } = req.params;
-      const {
-        employeeObjectId,
-        inTime,
-        outTime,
-        status,
-        firstName,
-        lastName
-      } = req.body;
+      const { employeeObjectId, inTime, outTime, status, firstName, lastName } = req.body;
 
       const attendanceDoc = await Attendance.findOne({ date });
-
       if (!attendanceDoc) {
         return res.status(404).json({
           success: false,
@@ -508,7 +495,6 @@ const attendanceController = {
 
       await attendanceDoc.save();
 
-      // 🔄 Auto sync to Google Sheets
       googleSheetsService.updateAttendanceRecord(date, employeeObjectId, {
         firstName: employeeRecord.firstName,
         lastName: employeeRecord.lastName,
@@ -523,7 +509,6 @@ const attendanceController = {
         message: 'Attendance record updated successfully',
         data: employeeRecord
       });
-
     } catch (error) {
       console.error('Error updating attendance record:', error);
       res.status(500).json({
@@ -534,11 +519,9 @@ const attendanceController = {
     }
   }],
 
-  // Delete attendance record (WITH IP RESTRICTION BUT WHITELISTED USERS BYPASS)
   deletebyid: [checkIPRestriction, async (req, res) => {
     try {
       const { date, employeeObjectId } = req.params;
-
       const attendanceDoc = await Attendance.findOne({ date });
 
       if (!attendanceDoc) {
@@ -560,11 +543,9 @@ const attendanceController = {
       }
 
       const deletedEmployee = attendanceDoc.employees.splice(employeeIndex, 1)[0];
-
       attendanceDoc.totalEmployeesPresent = attendanceDoc.employees.filter(emp => emp.inTime).length;
       attendanceDoc.totalEmployeesCompleted = attendanceDoc.employees.filter(emp => emp.outTime).length;
 
-      // 🔄 Auto sync to Google Sheets
       googleSheetsService.deleteAttendanceRecord(date, employeeObjectId)
         .catch(err => console.error('Google Sheets sync error:', err.message));
 
@@ -584,7 +565,6 @@ const attendanceController = {
         message: 'Employee attendance record deleted successfully',
         data: deletedEmployee
       });
-
     } catch (error) {
       console.error('Error deleting attendance record:', error);
       res.status(500).json({
@@ -595,7 +575,6 @@ const attendanceController = {
     }
   }],
 
-  // Bulk delete attendance records (WITH IP RESTRICTION BUT WHITELISTED USERS BYPASS)
   deleteall: [checkIPRestriction, async (req, res) => {
     try {
       const { recordsToDelete } = req.body;
@@ -613,8 +592,8 @@ const attendanceController = {
       for (const record of recordsToDelete) {
         try {
           const { date, employeeObjectId } = record;
-
           const attendanceDoc = await Attendance.findOne({ date });
+          
           if (!attendanceDoc) {
             errors.push(`No attendance document found for date: ${date}`);
             continue;
@@ -640,13 +619,11 @@ const attendanceController = {
           } else {
             await attendanceDoc.save();
           }
-
         } catch (err) {
           errors.push(`Error processing record: ${err.message}`);
         }
       }
 
-      // 🔄 Auto sync to Google Sheets
       googleSheetsService.bulkDeleteAttendanceRecords(recordsToDelete)
         .catch(err => console.error('Google Sheets sync error:', err.message));
 
@@ -658,7 +635,6 @@ const attendanceController = {
           errors: errors.length > 0 ? errors : null
         }
       });
-
     } catch (error) {
       console.error('Error in bulk delete:', error);
       res.status(500).json({
@@ -669,13 +645,10 @@ const attendanceController = {
     }
   }],
 
-  // 🆕 ONE-TIME: Sync existing data from MongoDB to Google Sheets (NO IP RESTRICTION - Admin only)
   syncToGoogleSheets: async (req, res) => {
     try {
       console.log('🔄 Starting one-time sync to Google Sheets...');
-
       const records = await Attendance.find({}).sort({ dateObject: -1 }).lean();
-
       const allEmployeeRecords = [];
 
       records.forEach(attendanceDoc => {
@@ -697,7 +670,6 @@ const attendanceController = {
       });
 
       console.log(`📊 Found ${allEmployeeRecords.length} total records in MongoDB`);
-
       const result = await googleSheetsService.syncAllRecords(allEmployeeRecords);
 
       if (result.success) {
@@ -714,7 +686,6 @@ const attendanceController = {
           error: result.error
         });
       }
-
     } catch (error) {
       console.error('Error syncing to Google Sheets:', error);
       res.status(500).json({
