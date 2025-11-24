@@ -708,18 +708,12 @@ const WHITELISTED_EMPLOYEE_IDS = [
 // 🔒 IP Restriction Middleware with User Whitelist
 const checkIPRestriction = async (req, res, next) => {
   // Get employeeId from different possible locations
-  const employeeId = req.body.employeeId ||           // For markAttendance, autoAttendance
-                     req.body.employeeObjectId ||     // For updaterecord
-                     req.params.employeeObjectId;     // For deletebyid
-  
-  console.log('========== IP RESTRICTION CHECK ==========');
-  console.log('📋 Employee ID from request:', employeeId);
-  console.log('🔓 Whitelisted IDs:', WHITELISTED_EMPLOYEE_IDS.join(', '));
+  const employeeId = req.body.employeeId ||           
+                     req.body.employeeObjectId ||     
+                     req.params.employeeObjectId;    
 
   // Check if employee is whitelisted
   if (employeeId && WHITELISTED_EMPLOYEE_IDS.includes(employeeId)) {
-    console.log(`✅ WHITELISTED: Employee ${employeeId} can access from any IP`);
-    console.log('==========================================\n');
     return next();
   }
 
@@ -729,7 +723,6 @@ const checkIPRestriction = async (req, res, next) => {
                  req.socket.remoteAddress ||
                  (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'].split(',')[0]);
 
-  console.log(`🔍 Raw IP from request: ${clientIP}`);
 
   // Clean up IPv6 prefix if present (::ffff:IPv4)
   let cleanIP = clientIP.replace(/^::ffff:/, '');
@@ -739,8 +732,6 @@ const checkIPRestriction = async (req, res, next) => {
   // 🏠 Allow localhost IPs (both IPv4 and IPv6)
   const localhostIPs = ['127.0.0.1', '::1', 'localhost', '0:0:0:0:0:0:0:1'];
   if (localhostIPs.includes(cleanIP)) {
-    console.log(`🏠 Localhost access allowed: ${cleanIP}`);
-    console.log('==========================================\n');
     return next();
   }
 
@@ -752,8 +743,6 @@ const checkIPRestriction = async (req, res, next) => {
     const allowedIPv4Subnet = /^49\.207\.\d{1,3}\.\d{1,3}$/;
     
     if (!allowedIPv4Subnet.test(cleanIP)) {
-      console.log(`🚫 ACCESS DENIED for IPv4: ${cleanIP}${employeeId ? ` (Employee: ${employeeId})` : ''}`);
-      console.log('==========================================\n');
       return res.status(403).json({
         success: false,
         error: "Access Denied",
@@ -764,30 +753,13 @@ const checkIPRestriction = async (req, res, next) => {
       });
     }
 
-    console.log(`✅ IPv4 authorized: ${cleanIP}`);
-    console.log('==========================================\n');
     return next();
   }
 
   // Check if it's an IPv6 address
   const isIPv6 = cleanIP.includes(':');
   
-  if (isIPv6) {
-    console.log(`🌐 IPv6 address detected: ${cleanIP}`);
-    
-    // For IPv6, you need to know your IPv6 prefix
-    // Common format: 2405:201:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx
-    // You can allow specific IPv6 prefix or convert to IPv4 if it's a mapped address
-    
-    // Option 1: Allow all IPv6 from your ISP's IPv6 block (you need to know your IPv6 prefix)
-    // Example: If your IPv6 starts with 2405:201:
-    // const allowedIPv6Prefix = /^2405:201:/;
-    
-    // Option 2: For now, log and deny, so we can see what IPv6 address is coming
-    console.log(`⚠️ IPv6 not yet configured - denying access`);
-    console.log(`💡 Add this IPv6 prefix to allowed list if needed`);
-    console.log('==========================================\n');
-    
+  if (isIPv6) { 
     return res.status(403).json({
       success: false,
       error: "Access Denied",
@@ -798,10 +770,6 @@ const checkIPRestriction = async (req, res, next) => {
       hint: "Ask admin to whitelist your IPv6 prefix or use whitelisted employee ID"
     });
   }
-
-  // Unknown IP format
-  console.log(`❓ Unknown IP format: ${cleanIP}`);
-  console.log('==========================================\n');
   return res.status(403).json({
     success: false,
     error: "Access Denied",
