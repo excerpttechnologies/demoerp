@@ -697,7 +697,7 @@
 const Employee = require('../../models/hrms/employee');
 const Attendance = require('../../models/hrms/Attendance');
 const googleSheetsService = require('../../services/googleSheetsService');
-
+require('dotenv').config();
 // 🔓 Whitelist of employee IDs who can bypass IP restriction
 const WHITELISTED_EMPLOYEE_IDS = [
   '68be61485e666f27c9d4791e',  // Sreevatsa B R
