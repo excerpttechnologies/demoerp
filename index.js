@@ -54,7 +54,7 @@ const contactRoutes = require('./routes/crm/contactRoutes'); // Ensure this is t
 const leadRoutes = require('./routes/crm/leadRoutes');
 const proposalRoutes = require('./routes/crm/ProposalRoutes');
 
-
+const googleSheetsService = require('./services/googleSheetsService');
 
 
 //HRMS
@@ -105,7 +105,7 @@ app.get('/api/image/:filename', (req, res) => {
   }
 });
 
-
+app.set('trust proxy', true);
 app.use('/api/del', salesDeliveryRoutes);
 app.use('/api/category', categoryRoutes);
 app.use('/api/material', materialRoutes);
