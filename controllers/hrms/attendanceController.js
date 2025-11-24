@@ -698,16 +698,34 @@ const Employee = require('../../models/hrms/employee');
 const Attendance = require('../../models/hrms/Attendance');
 const googleSheetsService = require('../../services/googleSheetsService');
 require('dotenv').config();
-// 🔓 Whitelist of employee IDs who can bypass IP restriction
+//       }
+//     } catch (error) {
+//       console.error('Error syncing to Google Sheets:', error);
+//       res.status(500).json({
+//         success: false,
+//         message: 'Error syncing to Google Sheets',
+//         error: error.message
+//       });
+//     }
+//   }
+// };
 const WHITELISTED_EMPLOYEE_IDS = [
-  '68be61485e666f27c9d4791e',  // Sreevatsa B R
-  '68be609a5e666f27c9d47918',  // Another employee
-  // Add more employee ObjectIds here
+  '68be61485e666f27c9d4791e', 
+  '68be609a5e666f27c9d47918', 
 ];
-
+//       }
+//     } catch (error) {
+//       console.error('Error syncing to Google Sheets:', error);
+//       res.status(500).json({
+//         success: false,
+//         message: 'Error syncing to Google Sheets',
+//         error: error.message
+//       });
+//     }
+//   }
+// };
 // 🔒 IP Restriction Middleware with User Whitelist
 const checkIPRestriction = async (req, res, next) => {
-  // Get employeeId from different possible locations
   const employeeId = req.body.employeeId ||           
                      req.body.employeeObjectId ||     
                      req.params.employeeObjectId;    
