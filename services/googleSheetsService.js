@@ -1,6 +1,7 @@
 const { GoogleSpreadsheet } = require('google-spreadsheet');
 const { JWT } = require('google-auth-library');
 require('dotenv').config();
+
 class GoogleSheetsService {
   constructor() {
     this.doc = null;
@@ -307,15 +308,25 @@ class GoogleSheetsService {
     }
   }
 
+  // 🇮🇳 Format DateTime in IST (Indian Standard Time - UTC+5:30)
   formatDateTime(date) {
     if (!date) return '';
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    const hours = String(d.getHours()).padStart(2, '0');
-    const minutes = String(d.getMinutes()).padStart(2, '0');
-    const seconds = String(d.getSeconds()).padStart(2, '0');
+    
+    // Convert input to Date object if it's not already
+    const utcDate = new Date(date);
+    
+    // IST is UTC + 5 hours 30 minutes
+    const istOffset = 5.5 * 60 * 60 * 1000; // 5.5 hours in milliseconds
+    const istDate = new Date(utcDate.getTime() + istOffset);
+    
+    // Format the IST date
+    const year = istDate.getUTCFullYear();
+    const month = String(istDate.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(istDate.getUTCDate()).padStart(2, '0');
+    const hours = String(istDate.getUTCHours()).padStart(2, '0');
+    const minutes = String(istDate.getUTCMinutes()).padStart(2, '0');
+    const seconds = String(istDate.getUTCSeconds()).padStart(2, '0');
+    
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 }
