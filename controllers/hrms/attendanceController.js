@@ -710,8 +710,7 @@ require('dotenv').config();
 //   }
 // };
 const WHITELISTED_EMPLOYEE_IDS = [
-  '68be61485e666f27c9d4791e', 
-  '68be609a5e666f27c9d47918', 
+
 ];
 //       }
 //     } catch (error) {
