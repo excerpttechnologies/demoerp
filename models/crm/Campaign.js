@@ -82,6 +82,10 @@ const campaignSchema = new mongoose.Schema({
   },
   financialYear: {
     type: String,
+<<<<<<< HEAD
+=======
+    required: true
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
   },
   isActive: {
     type: Boolean,
@@ -91,7 +95,11 @@ const campaignSchema = new mongoose.Schema({
   timestamps: true
 });
 
+<<<<<<< HEAD
 campaignSchema.index({ companyId: 1 });
+=======
+campaignSchema.index({ companyId: 1, financialYear: 1 });
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 campaignSchema.index({ status: 1 });
 campaignSchema.index({ startDate: 1, endDate: 1 });
 

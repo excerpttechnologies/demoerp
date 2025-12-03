@@ -76,13 +76,21 @@ const contactStageController = {
         return res.status(404).json({ error: 'Contact stage not found' });
       }
 
+<<<<<<< HEAD
       const { companyId,  order: currentOrder } = currentStage;
+=======
+      const { companyId, financialYear, order: currentOrder } = currentStage;
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
       
       if (direction === 'up' && currentOrder > 1) {
         // Find the stage with order = currentOrder - 1
         const prevStage = await ContactStage.findOne({
           companyId,
+<<<<<<< HEAD
           
+=======
+          financialYear,
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
           order: currentOrder - 1
         });
         
@@ -95,7 +103,11 @@ const contactStageController = {
         // Find the stage with order = currentOrder + 1
         const nextStage = await ContactStage.findOne({
           companyId,
+<<<<<<< HEAD
           
+=======
+          financialYear,
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
           order: currentOrder + 1
         });
         

@@ -64,7 +64,11 @@ const employeeRoutes = require('./routes/hrms/employeeroutes')
 const designationRoutes = require('./routes/hrms/designation')
 
 const salaryRoutes = require("./routes/hrms/salary"); const leaveRoutes = require('./routes/hrms/Leave');
+<<<<<<< HEAD
 const dieaRoutes = require('./routes/diea/diea');
+=======
+
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 const attendanceRoutes = require('./routes/hrms/attendanceRoutes');
 const app = express();
 app.use(cors());
@@ -205,12 +209,15 @@ app.use('/api/attendance', employeeRoutes);
 
 // API Routes
 app.use('/api/master-data', masterDataImportRoutes);
+<<<<<<< HEAD
 
 
 
 app.use('/api/dieacompanies', require('./routes/diea/diea'));
 app.use('/api/dieainvoices', require('./routes/diea/dieainvoice'));
 
+=======
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 app.use(history());
 
 app.use(express.static(path.join(__dirname, 'dist')));

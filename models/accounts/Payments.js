@@ -121,6 +121,10 @@ const paymentSchema = new mongoose.Schema({
   },
   financialYear: {
     type: String,
+<<<<<<< HEAD
+=======
+    required: true
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
   },
   // Additional metadata
   tags: [String],
@@ -141,7 +145,11 @@ paymentSchema.index({ recordId: 1, paymentDate: -1 });
 paymentSchema.index({ entityName: 1, paymentDate: -1 });
 paymentSchema.index({ paymentDocNumber: 1 });
 paymentSchema.index({ recordType: 1, status: 1 });
+<<<<<<< HEAD
 paymentSchema.index({  companyId: 1 });
+=======
+paymentSchema.index({ financialYear: 1, companyId: 1 });
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 
 // Virtual for formatted payment amount
 paymentSchema.virtual('formattedAmount').get(function() {

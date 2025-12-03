@@ -31,6 +31,10 @@ const contactStageSchema = new mongoose.Schema({
   },
   financialYear: {
     type: String,
+<<<<<<< HEAD
+=======
+    required: true
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
   },
   isActive: {
     type: Boolean,
@@ -40,6 +44,10 @@ const contactStageSchema = new mongoose.Schema({
   timestamps: true
 });
 
+<<<<<<< HEAD
 contactStageSchema.index({ companyId: 1, , order: 1 });
+=======
+contactStageSchema.index({ companyId: 1, financialYear: 1, order: 1 });
+>>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 
 module.exports = mongoose.model('ContactStage', contactStageSchema);
