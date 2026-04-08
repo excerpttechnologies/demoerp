@@ -5,7 +5,6 @@ const Purchasecategory=require('../../models/purchase/purchaserequestmodel')
 // @access  Public
 const createCategory = async (req, res) => {
   try { 
-<<<<<<< HEAD
     const { categoryName,  rangeStart, rangeEnd } = req.body;
 
     if (!categoryName ||  rangeStart === undefined || rangeEnd === undefined) {
@@ -13,15 +12,6 @@ const createCategory = async (req, res) => {
     }
 
     const category = new Purchasecategory({ categoryName, rangeStart, rangeEnd });
-=======
-    const { categoryName, prefix, rangeStart, rangeEnd } = req.body;
-
-    if (!categoryName || !prefix || rangeStart === undefined || rangeEnd === undefined) {
-      return res.status(400).json({ error: 'All fields are required' });
-    }
-
-    const category = new Purchasecategory({ categoryName, prefix, rangeStart, rangeEnd });
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
     await category.save();
 
     res.status(201).json({ message: 'Category created successfully', category });

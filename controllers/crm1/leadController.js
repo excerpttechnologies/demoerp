@@ -130,10 +130,6 @@ const leadController = {
       const leads = await Lead.find({ 
         campaignId, 
         companyId, 
-<<<<<<< HEAD
-=======
-        financialYear 
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
       }).populate('campaignId', 'campaignName');
       
       res.json(leads);

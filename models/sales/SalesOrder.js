@@ -163,11 +163,7 @@ const SalesOrderSchema = new mongoose.Schema({
 // Indexes for better performance
 SalesOrderSchema.index({ soNumber: 1 });
 SalesOrderSchema.index({ customerName: 1 });
-<<<<<<< HEAD
 SalesOrderSchema.index({ companyId: 1,  });
-=======
-SalesOrderSchema.index({ companyId: 1, financialYear: 1 });
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 SalesOrderSchema.index({ date: 1 });
 SalesOrderSchema.index({ status: 1 });
 SalesOrderSchema.index({ isDeleted: 1 });

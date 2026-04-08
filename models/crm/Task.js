@@ -61,11 +61,7 @@
 //   timestamps: true
 // });
 
-<<<<<<< HEAD
 // taskSchema.index({ companyId: 1,  });
-=======
-// taskSchema.index({ companyId: 1, financialYear: 1 });
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 // taskSchema.index({ projectId: 1 });
 
 // module.exports = mongoose.model('Task', taskSchema);
@@ -123,10 +119,6 @@ const taskSchema = new mongoose.Schema({
   },
   financialYear: {
     type: String,
-<<<<<<< HEAD
-=======
-    required: true
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
   },
   createdBy: {
     type: mongoose.Schema.Types.ObjectId,
@@ -141,11 +133,7 @@ const taskSchema = new mongoose.Schema({
 });
 
 // Index for better query performance
-<<<<<<< HEAD
 taskSchema.index({ companyId: 1,  });
-=======
-taskSchema.index({ companyId: 1, financialYear: 1 });
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 taskSchema.index({ projectId: 1 });
 taskSchema.index({ assignedTo: 1 });
 taskSchema.index({ status: 1 });

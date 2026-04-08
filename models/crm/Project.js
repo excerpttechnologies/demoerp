@@ -60,10 +60,6 @@ const projectSchema = new mongoose.Schema({
   },
   financialYear: {
     type: String,
-<<<<<<< HEAD
-=======
-    required: true
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
   },
   isActive: {
     type: Boolean,
@@ -73,10 +69,6 @@ const projectSchema = new mongoose.Schema({
   timestamps: true
 });
 
-<<<<<<< HEAD
 projectSchema.index({ companyId: 1 });
-=======
-projectSchema.index({ companyId: 1, financialYear: 1 });
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 
 module.exports = mongoose.model('Project', projectSchema);

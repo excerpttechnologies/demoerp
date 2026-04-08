@@ -15,18 +15,12 @@ const campaignController = {
   // Create new campaign
   createCampaign: async (req, res) => {
     try {
-<<<<<<< HEAD
       console.log('Creating campaign for:', req.body);
-=======
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
       const campaign = new Campaign(req.body);
       await campaign.save();
       res.status(201).json(campaign);
     } catch (error) {
-<<<<<<< HEAD
       console.error('Error creating campaign:', error);
-=======
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
       res.status(400).json({ error: error.message });
     }
   },

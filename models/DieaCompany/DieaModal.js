@@ -30,6 +30,10 @@ const dieaCompanySchema = new mongoose.Schema({
   previousBalance: {
     type: Number,
     default: 0
+  },
+  invoiceDate: {
+    type: Date,
+    default: Date.now
   }
 }, {
   timestamps: true

@@ -42,10 +42,6 @@ const timeEntrySchema = new mongoose.Schema({
   },
   financialYear: {
     type: String,
-<<<<<<< HEAD
-=======
-    required: true
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
   },
   isActive: {
     type: Boolean,
@@ -55,11 +51,7 @@ const timeEntrySchema = new mongoose.Schema({
   timestamps: true
 });
 
-<<<<<<< HEAD
 timeEntrySchema.index({ companyId: 1,  });
-=======
-timeEntrySchema.index({ companyId: 1, financialYear: 1 });
->>>>>>> 948a3a4afe237890d7cbd6596f6f9dcdffcf9f20
 timeEntrySchema.index({ projectId: 1 });
 timeEntrySchema.index({ taskId: 1 });
 timeEntrySchema.index({ date: 1 });

@@ -40,7 +40,7 @@ exports.createCompany = async (req, res) => {
 exports.getAllCompanies = async (req, res) => {
   try {
     const companies = await Company.find().sort({ createdAt: -1 });
-    
+    console.log('Fetched companies:', companies);
     res.status(200).json({
       success: true,
       count: companies.length,
