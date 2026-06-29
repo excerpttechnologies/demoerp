@@ -1,0 +1,40 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hex1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981"/>
+      <stop offset="100%" style="stop-color:#059669"/>
+    </linearGradient>
+    <filter id="hexGlow">
+      <feGaussianBlur stdDeviation="1.5"/>
+    </filter>
+  </defs>
+  
+  <g transform="translate(20, 15)">
+    <!-- Central hexagon -->
+    <polygon points="50,20 65,28 65,44 50,52 35,44 35,28" fill="none" stroke="url(#hex1)" stroke-width="2.5" opacity="0.8">
+      <animateTransform attributeName="transform" type="rotate" values="0 50 36;360 50 36" dur="8s" repeatCount="indefinite"/>
+    </polygon>
+    
+    <!-- Surrounding hexagons -->
+    <polygon points="30,10 40,15 40,25 30,30 20,25 20,15" fill="none" stroke="url(#hex1)" stroke-width="1.5" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite"/>
+    </polygon>
+    <polygon points="70,10 80,15 80,25 70,30 60,25 60,15" fill="none" stroke="url(#hex1)" stroke-width="1.5" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.5s" repeatCount="indefinite"/>
+    </polygon>
+    <polygon points="30,46 40,51 40,61 30,66 20,61 20,51" fill="none" stroke="url(#hex1)" stroke-width="1.5" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="1s" repeatCount="indefinite"/>
+    </polygon>
+    <polygon points="70,46 80,51 80,61 70,66 60,61 60,51" fill="none" stroke="url(#hex1)" stroke-width="1.5" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="1.5s" repeatCount="indefinite"/>
+    </polygon>
+    
+    <!-- Center node -->
+    <circle cx="50" cy="36" r="6" fill="url(#hex1)" filter="url(#hexGlow)">
+      <animate attributeName="r" values="6;8;6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <text x="120" y="52" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="#1e293b" letter-spacing="-1">Eva</text>
+  <text x="120" y="76" font-family="Arial, sans-serif" font-size="19" font-weight="600" fill="url(#hex1)" letter-spacing="5">ERP</text>
+</svg>

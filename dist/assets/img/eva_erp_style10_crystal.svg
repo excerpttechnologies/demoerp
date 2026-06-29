@@ -1,0 +1,109 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="crystalGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#7c3aed;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="crystalGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#c026d3;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="crystalGrad3" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#d946ef;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#c026d3;stop-opacity:1"/>
+    </linearGradient>
+    
+    <linearGradient id="crystalText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#c026d3;stop-opacity:1"/>
+    </linearGradient>
+    
+    <filter id="crystalGlow">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="sparkle">
+      <feGaussianBlur stdDeviation="1" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Style 10: Geometric Crystal -->
+  <g id="crystalLogo">
+    <!-- Crystal facets forming E -->
+    <g transform="translate(22, 22)">
+      <!-- Diamond/crystal shape with facets -->
+      
+      <!-- Top facet -->
+      <path d="M 35 10 L 50 20 L 35 25 L 20 20 Z" fill="url(#crystalGrad3)" opacity="0.9">
+        <animate attributeName="opacity" values="0.9;1;0.9" dur="3s" repeatCount="indefinite"/>
+      </path>
+      
+      <!-- Left facets -->
+      <path d="M 20 20 L 35 25 L 35 40 L 20 35 Z" fill="url(#crystalGrad1)" opacity="0.85"/>
+      <path d="M 20 35 L 35 40 L 35 55 L 20 50 Z" fill="url(#crystalGrad2)" opacity="0.9"/>
+      <path d="M 20 50 L 35 55 L 35 70 L 20 65 Z" fill="url(#crystalGrad1)" opacity="0.95"/>
+      
+      <!-- Right facets forming E strokes -->
+      <path d="M 35 25 L 60 30 L 60 35 L 35 30 Z" fill="url(#crystalGrad2)" filter="url(#crystalGlow)">
+        <animate attributeName="opacity" values="0.85;1;0.85" dur="2s" repeatCount="indefinite"/>
+      </path>
+      
+      <path d="M 35 40 L 55 45 L 55 50 L 35 45 Z" fill="url(#crystalGrad3)" filter="url(#crystalGlow)">
+        <animate attributeName="opacity" values="0.85;1;0.85" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+      </path>
+      
+      <path d="M 35 55 L 60 62 L 60 67 L 35 60 Z" fill="url(#crystalGrad1)" filter="url(#crystalGlow)">
+        <animate attributeName="opacity" values="0.85;1;0.85" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+      </path>
+      
+      <!-- Highlight lines -->
+      <line x1="35" y1="10" x2="35" y2="70" stroke="#ffffff" stroke-width="1.5" opacity="0.3"/>
+      <line x1="20" y1="20" x2="50" y2="20" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+      
+      <!-- Sparkle points -->
+      <circle cx="50" cy="20" r="2" fill="#ffffff" filter="url(#sparkle)">
+        <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="60" cy="35" r="2" fill="#ffffff" filter="url(#sparkle)">
+        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="0.7s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="35" cy="55" r="2" fill="#ffffff" filter="url(#sparkle)">
+        <animate attributeName="opacity" values="0;1;0" dur="2s" begin="1.4s" repeatCount="indefinite"/>
+      </circle>
+      
+      <!-- Floating crystal shards -->
+      <polygon points="65,25 70,30 65,35" fill="#a855f7" opacity="0.6">
+        <animate attributeName="transform" values="translate(0,0) rotate(0 67.5 30);translate(0,-2) rotate(10 67.5 30);translate(0,0) rotate(0 67.5 30)" dur="3s" repeatCount="indefinite"/>
+      </polygon>
+    </g>
+    
+    <!-- Text with crystal shine -->
+    <text x="105" y="50" font-family="Arial, sans-serif" font-size="42" font-weight="700" fill="#1e293b" letter-spacing="-2">
+      Eva
+      <animate attributeName="opacity" values="1;0.95;1" dur="3s" repeatCount="indefinite"/>
+    </text>
+    
+    <text x="105" y="75" font-family="Arial, sans-serif" font-size="20" font-weight="700" fill="url(#crystalText)" letter-spacing="5">ERP</text>
+    
+    <!-- Prismatic underline -->
+    <g>
+      <rect x="105" y="80" width="25" height="3" rx="1.5" fill="#8b5cf6" opacity="0.8"/>
+      <rect x="132" y="80" width="25" height="3" rx="1.5" fill="#a855f7" opacity="0.7"/>
+      <rect x="159" y="80" width="25" height="3" rx="1.5" fill="#c026d3" opacity="0.6">
+        <animate attributeName="opacity" values="0.6;0.9;0.6" dur="2s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+  </g>
+</svg>

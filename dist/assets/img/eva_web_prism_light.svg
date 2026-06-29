@@ -1,0 +1,54 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="prism1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ef4444">
+        <animate attributeName="offset" values="0;0.33;0" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="33%" style="stop-color:#fbbf24">
+        <animate attributeName="offset" values="0.33;0.66;0.33" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="66%" style="stop-color:#22c55e">
+        <animate attributeName="offset" values="0.66;1;0.66" dur="3s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#3b82f6">
+        <animate attributeName="offset" values="1;0.5;1" dur="3s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    <filter id="prismGlow">
+      <feGaussianBlur stdDeviation="2"/>
+    </filter>
+  </defs>
+  
+  <g transform="translate(22, 20)">
+    <!-- Prism shape -->
+    <polygon points="40,15 60,50 20,50" fill="none" stroke="url(#prism1)" stroke-width="3" opacity="0.7"/>
+    
+    <!-- Light rays -->
+    <line x1="40" y1="15" x2="15" y2="5" stroke="#ef4444" stroke-width="2" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="40" y1="15" x2="35" y2="0" stroke="#fbbf24" stroke-width="2" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="40" y1="15" x2="55" y2="0" stroke="#22c55e" stroke-width="2" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+    </line>
+    <line x1="40" y1="15" x2="65" y2="5" stroke="#3b82f6" stroke-width="2" opacity="0.5">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.9s" repeatCount="indefinite"/>
+    </line>
+    
+    <!-- Refracted rays from bottom -->
+    <line x1="60" y1="50" x2="75" y2="60" stroke="#ef4444" stroke-width="1.5" opacity="0.4"/>
+    <line x1="60" y1="50" x2="78" y2="55" stroke="#fbbf24" stroke-width="1.5" opacity="0.4"/>
+    <line x1="60" y1="50" x2="80" y2="50" stroke="#22c55e" stroke-width="1.5" opacity="0.4"/>
+    <line x1="60" y1="50" x2="78" y2="45" stroke="#3b82f6" stroke-width="1.5" opacity="0.4"/>
+    
+    <!-- Glow at prism point -->
+    <circle cx="40" cy="15" r="4" fill="white" filter="url(#prismGlow)">
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <text x="120" y="52" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="#1e293b" letter-spacing="-1">Eva</text>
+  <text x="120" y="76" font-family="Arial, sans-serif" font-size="19" font-weight="600" fill="url(#prism1)" letter-spacing="5">ERP</text>
+</svg>

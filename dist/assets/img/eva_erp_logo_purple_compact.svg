@@ -1,0 +1,172 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Definitions for gradients and filters -->
+  <defs>
+    <!-- Rich purple gradient for icon -->
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:1">
+        <animate attributeName="stop-color" values="#7c3aed;#a855f7;#c026d3;#7c3aed" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="50%" style="stop-color:#a855f7;stop-opacity:1">
+        <animate attributeName="stop-color" values="#a855f7;#c026d3;#7c3aed;#a855f7" dur="6s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" style="stop-color:#c026d3;stop-opacity:1">
+        <animate attributeName="stop-color" values="#c026d3;#7c3aed;#a855f7;#c026d3" dur="6s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+    
+    <!-- Text gradient for Eva -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f8f8ff;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#e9d5ff;stop-opacity:1"/>
+    </linearGradient>
+    
+    <!-- ERP purple gradient -->
+    <linearGradient id="erpGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7;stop-opacity:1"/>
+      <stop offset="50%" style="stop-color:#c026d3;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#d946ef;stop-opacity:1"/>
+    </linearGradient>
+    
+    <!-- Accent gradient -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c084fc;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#e879f9;stop-opacity:1"/>
+    </linearGradient>
+    
+    <!-- Glow filter -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Shadow filter -->
+    <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="2"/>
+      <feOffset dx="0" dy="1" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.25"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background decoration -->
+  <circle cx="50" cy="50" r="55" fill="url(#iconGradient)" opacity="0.04">
+    <animate attributeName="r" values="55;62;55" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Icon Container -->
+  <g id="iconGroup" transform="translate(15, 15)">
+    <!-- Rotating gradient background -->
+    <rect x="0" y="0" width="70" height="70" rx="18" fill="url(#iconGradient)" filter="url(#shadow)">
+      <animateTransform
+        attributeName="transform"
+        attributeType="XML"
+        type="rotate"
+        from="0 35 35"
+        to="360 35 35"
+        dur="20s"
+        repeatCount="indefinite"/>
+    </rect>
+    
+    <!-- Letter E with animated drawing -->
+    <g id="letterE">
+      <path d="M 22 22 L 48 22" stroke="white" stroke-width="4.5" stroke-linecap="round" fill="none" filter="url(#glow)">
+        <animate attributeName="stroke-dasharray" from="26 26" to="26 0" dur="1s" fill="freeze"/>
+      </path>
+      <path d="M 22 22 L 22 48" stroke="white" stroke-width="4.5" stroke-linecap="round" fill="none" filter="url(#glow)">
+        <animate attributeName="stroke-dasharray" from="26 26" to="26 0" dur="1s" begin="0.3s" fill="freeze"/>
+      </path>
+      <path d="M 22 35 L 47 35" stroke="white" stroke-width="4.5" stroke-linecap="round" fill="none" filter="url(#glow)">
+        <animate attributeName="stroke-dasharray" from="25 25" to="25 0" dur="1s" begin="0.6s" fill="freeze"/>
+      </path>
+      <path d="M 22 48 L 48 48" stroke="white" stroke-width="4.5" stroke-linecap="round" fill="none" filter="url(#glow)">
+        <animate attributeName="stroke-dasharray" from="26 26" to="26 0" dur="1s" begin="0.9s" fill="freeze"/>
+      </path>
+    </g>
+    
+    <!-- Connection dots with pulsing animation -->
+    <circle cx="35" cy="10" r="3.5" fill="#c084fc" filter="url(#glow)">
+      <animate attributeName="r" values="3.5;5;3.5" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.6;1" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="60" cy="35" r="3.5" fill="#c084fc" filter="url(#glow)">
+      <animate attributeName="r" values="3.5;5;3.5" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.6;1" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="10" cy="35" r="3.5" fill="#c084fc" filter="url(#glow)">
+      <animate attributeName="r" values="3.5;5;3.5" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="1;0.6;1" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Connecting lines -->
+    <line x1="35" y1="14" x2="35" y2="22" stroke="#c084fc" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="56" y1="35" x2="48" y2="35" stroke="#c084fc" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </line>
+    <line x1="14" y1="35" x2="22" y2="35" stroke="#c084fc" stroke-width="1.5" opacity="0.3">
+      <animate attributeName="opacity" values="0.3;0.7;0.3" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- Text: Eva -->
+  <text x="105" y="55" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="900" fill="url(#textGradient)" letter-spacing="-2" filter="url(#shadow)">
+    Eva
+    <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0.3s" fill="freeze"/>
+  </text>
+  
+  <!-- Text: ERP -->
+  <g id="erpGroup">
+    <text x="105" y="82" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="url(#erpGradient)" letter-spacing="5">
+      ERP
+      <animate attributeName="opacity" from="0" to="1" dur="0.8s" begin="0.5s" fill="freeze"/>
+    </text>
+    
+    <!-- Accent line -->
+    <rect x="180" y="72" width="0" height="3" rx="1.5" fill="url(#accentGradient)" opacity="0.8">
+      <animate attributeName="width" from="0" to="50" dur="0.8s" begin="0.7s" fill="freeze"/>
+    </rect>
+  </g>
+  
+  <!-- Tagline -->
+  <text x="105" y="95" font-family="Arial, Helvetica, sans-serif" font-size="8" font-weight="500" fill="#c4b5fd" letter-spacing="1.5" opacity="0">
+    ENTERPRISE RESOURCE PLANNING
+    <animate attributeName="opacity" from="0" to="0.7" dur="0.8s" begin="0.9s" fill="freeze"/>
+  </text>
+  
+  <!-- Decorative floating elements -->
+  <circle cx="290" cy="35" r="2" fill="#a855f7" opacity="0.3">
+    <animate attributeName="cy" values="35;25;35" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="305" cy="55" r="1.5" fill="#c026d3" opacity="0.25">
+    <animate attributeName="cy" values="55;65;55" dur="5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Interactive hover effects -->
+  <style>
+    @media (hover: hover) {
+      #iconGroup:hover rect {
+        animation: fastSpin 3s linear infinite;
+      }
+      #iconGroup:hover #letterE path {
+        stroke: #c084fc;
+      }
+      text:hover {
+        filter: url(#glow);
+      }
+    }
+    
+    @keyframes fastSpin {
+      from { transform: rotate(0deg); transform-origin: 35px 35px; }
+      to { transform: rotate(360deg); transform-origin: 35px 35px; }
+    }
+  </style>
+</svg>

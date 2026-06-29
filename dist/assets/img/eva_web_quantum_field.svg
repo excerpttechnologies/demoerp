@@ -1,0 +1,48 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="qfield1">
+      <stop offset="0%" style="stop-color:#ec4899"/>
+      <stop offset="100%" style="stop-color:#be185d"/>
+    </radialGradient>
+    <filter id="qfieldGlow">
+      <feGaussianBlur stdDeviation="2.5"/>
+    </filter>
+  </defs>
+  
+  <g transform="translate(22, 22)">
+    <!-- Quantum field distortion -->
+    <ellipse cx="40" cy="30" rx="25" ry="18" fill="none" stroke="url(#qfield1)" stroke-width="1.5" opacity="0.4">
+      <animate attributeName="rx" values="25;30;25" dur="3s" repeatCount="indefinite"/>
+      <animate attributeName="ry" values="18;22;18" dur="3s" repeatCount="indefinite"/>
+    </ellipse>
+    <ellipse cx="40" cy="30" rx="18" ry="25" fill="none" stroke="url(#qfield1)" stroke-width="1.5" opacity="0.4">
+      <animate attributeName="rx" values="18;22;18" dur="3.5s" repeatCount="indefinite"/>
+      <animate attributeName="ry" values="25;30;25" dur="3.5s" repeatCount="indefinite"/>
+    </ellipse>
+    
+    <!-- Quantum particles -->
+    <circle cx="30" cy="20" r="3" fill="url(#qfield1)" filter="url(#qfieldGlow)">
+      <animate attributeName="cx" values="30;35;30" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="20;25;20" dur="2s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="50" cy="35" r="2.5" fill="url(#qfield1)" filter="url(#qfieldGlow)">
+      <animate attributeName="cx" values="50;45;50" dur="2.3s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="35;30;35" dur="2.3s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="40" cy="40" r="2" fill="url(#qfield1)" filter="url(#qfieldGlow)">
+      <animate attributeName="cx" values="40;38;40" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="cy" values="40;38;40" dur="2.5s" repeatCount="indefinite"/>
+      <animate attributeName="opacity" values="0.6;1;0.6" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    
+    <!-- Central point -->
+    <circle cx="40" cy="30" r="5" fill="url(#qfield1)" filter="url(#qfieldGlow)">
+      <animate attributeName="r" values="5;7;5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <text x="120" y="52" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="#1e293b" letter-spacing="-1">Eva</text>
+  <text x="120" y="76" font-family="Arial, sans-serif" font-size="19" font-weight="600" fill="url(#qfield1)" letter-spacing="5">ERP</text>
+</svg>

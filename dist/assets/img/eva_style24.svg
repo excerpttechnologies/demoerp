@@ -1,0 +1,25 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="infinity1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="50%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#c026d3"/>
+    </linearGradient>
+  </defs>
+  
+  <g transform="translate(15, 25)">
+    <!-- Infinity symbol with E integrated -->
+    <path d="M 15 25 Q 15 15 25 15 Q 35 15 35 25 Q 35 35 45 35 Q 55 35 55 25 Q 55 15 45 15 Q 40 15 35 17" 
+          fill="none" stroke="url(#infinity1)" stroke-width="4" stroke-linecap="round">
+      <animate attributeName="stroke-dasharray" values="0,200;200,0" dur="3s" repeatCount="indefinite"/>
+    </path>
+    
+    <!-- E bars across infinity -->
+    <rect x="20" y="17" width="15" height="2" fill="url(#infinity1)" rx="1"/>
+    <rect x="20" y="24" width="13" height="2" fill="url(#infinity1)" rx="1"/>
+    <rect x="20" y="31" width="15" height="2" fill="url(#infinity1)" rx="1"/>
+  </g>
+  
+  <text x="90" y="50" font-family="Arial" font-size="38" font-weight="700" fill="#1a1a1a">Eva</text>
+  <text x="90" y="72" font-family="Arial" font-size="18" font-weight="600" fill="url(#infinity1)" letter-spacing="4">ERP</text>
+</svg>

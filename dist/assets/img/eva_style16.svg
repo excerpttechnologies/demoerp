@@ -1,0 +1,30 @@
+<svg width="320" height="100" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="badge1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c3aed"/>
+      <stop offset="100%" style="stop-color:#a855f7"/>
+    </linearGradient>
+    <linearGradient id="badge2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#a855f7"/>
+      <stop offset="100%" style="stop-color:#c026d3"/>
+    </linearGradient>
+  </defs>
+  
+  <g transform="translate(20, 20)">
+    <!-- Circular badge -->
+    <circle cx="35" cy="35" r="33" fill="url(#badge1)">
+      <animate attributeName="r" values="33;34;33" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="35" cy="35" r="28" fill="none" stroke="white" stroke-width="1" opacity="0.3"/>
+    
+    <!-- E in center -->
+    <text x="23" y="45" font-family="Arial" font-size="32" font-weight="900" fill="white">E</text>
+    
+    <!-- Small stars/accents -->
+    <circle cx="12" cy="12" r="2" fill="white" opacity="0.7"/>
+    <circle cx="58" cy="58" r="2" fill="white" opacity="0.7"/>
+  </g>
+  
+  <text x="95" y="50" font-family="Arial" font-size="38" font-weight="700" fill="#1a1a1a">Eva</text>
+  <text x="95" y="72" font-family="Arial" font-size="18" font-weight="600" fill="url(#badge2)" letter-spacing="4">ERP</text>
+</svg>
