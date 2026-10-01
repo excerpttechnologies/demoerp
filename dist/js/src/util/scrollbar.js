@@ -31,7 +31,7 @@ class ScrollBarHelper {
 
     // Public
     getWidth() {
-        // https://developer.mozilla.org/en-US/docs/Web/API/Window/innerWidth#usage_notes
+        // https://developer.mozilla.org/en-US/docs/Web/api/Window/innerWidth#usage_notes
         const documentWidth = document.documentElement.clientWidth
         return Math.abs(window.innerWidth - documentWidth)
     }

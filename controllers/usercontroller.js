@@ -323,16 +323,49 @@ exports.getAllUsers = async (req, res) => {
   res.json(users);
 };
 
-exports.getUserCompanies = async (req, res) => {
-  const userId = req.params.id;
-  console.log('Fetching companies for user ID:', userId);
-  const userCompanies = await UserCompany.find({ userId }).populate('companyId');
+// exports.getUserCompanies = async (req, res) => {
+//   const userId = req.params.id;
+//   console.log('Fetching companies for user ID:', userId);
+//   const userCompanies = await UserCompany.find({ userId }).populate('companyId');
+//  console.log('User companies fetched:', userCompanies);
+//   const companies = userCompanies.map((uc) => ({
+//     _id: uc.companyId._id,
+//     name: uc.companyId.name,
+//     role: uc.role,
+//   }));
+//   console.log('Companies for user:', companies);
+//     res.json(companies);
+// };
 
-  const companies = userCompanies.map((uc) => ({
-    _id: uc.companyId._id,
-    name: uc.companyId.name,
-    role: uc.role,
-  }));
-  console.log('Companies for user:', companies);
+
+
+exports.getUserCompanies = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    console.log('Fetching companies for user ID:', userId);
+
+    const userCompanies = await UserCompany.find({ userId })
+      .populate('companyId');
+
+   
+
+    const companies = userCompanies
+      .filter((uc) => uc.companyId !== null)
+      .map((uc) => ({
+        _id: uc.companyId._id,
+        name: uc.companyId.name,
+        role: uc.role,
+      }));
+
+    // console.log('Companies for user:', companies);
+
     res.json(companies);
+  } catch (error) {
+    console.error('Error fetching user companies:', error);
+    res.status(500).json({
+      message: 'Error fetching user companies',
+      error: error.message,
+    });
+  }
 };

@@ -12,7 +12,7 @@ const invoiceSchema = new mongoose.Schema({
   },
   companyId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Company',
+    ref: 'CompanyDiea',
     required: true
   },
   companyName: {

@@ -1,24 +1,31 @@
 const Company = require('../../models/DieaCompany/DieaModal');
 
+const escapeRegExp = (value = '') => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 // Create a new company
 exports.createCompany = async (req, res) => {
   try {
     const { companyName, address, phone, email, currentBalance, previousBalance } = req.body;
+    const normalizedName = (companyName || '').trim();
+    const normalizedEmail = (email || '').trim().toLowerCase();
 
-    // Check if company with same email already exists
-    const existingCompany = await Company.findOne({ email });
+    const existingCompany = await Company.findOne({
+      companyName: { $regex: `^${escapeRegExp(normalizedName)}$`, $options: 'i' },
+      email: normalizedEmail
+    });
+
     if (existingCompany) {
-      return res.status(400).json({
+      return res.status(409).json({
         success: false,
-        message: 'Company with this email already exists'
+        message: 'This company is already added today.'
       });
     }
 
     const company = await Company.create({
-      companyName,
-      address,
-      phone,
-      email,
+      companyName: normalizedName,
+      address: (address || '').trim(),
+      phone: (phone || '').trim(),
+      email: normalizedEmail,
       currentBalance: currentBalance || 0,
       previousBalance: previousBalance || 0
     });
