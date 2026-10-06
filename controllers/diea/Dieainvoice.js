@@ -126,7 +126,7 @@ exports.getAllInvoices = async (req, res) => {
   try {
     const invoices = await Invoice.find()
       .populate('companyId', 'companyName address')
-      .sort({ invoiceDate: -1, invoiceNo: -1 });
+      .sort({ companyName: 1 });
     
     res.status(200).json({
       success: true,
