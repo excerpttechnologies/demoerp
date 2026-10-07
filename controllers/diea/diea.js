@@ -5,7 +5,7 @@ const escapeRegExp = (value = '') => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'
 // Create a new company
 exports.createCompany = async (req, res) => {
   try {
-    const { companyName, address, phone, email, currentBalance, previousBalance } = req.body;
+    const { companyName, contactPersonName, address, phone, email, currentBalance, previousBalance } = req.body;
     const normalizedName = (companyName || '').trim();
     const normalizedEmail = (email || '').trim().toLowerCase();
 
@@ -23,6 +23,7 @@ exports.createCompany = async (req, res) => {
 
     const company = await Company.create({
       companyName: normalizedName,
+      contactPersonName: (contactPersonName || '').trim(),
       address: (address || '').trim(),
       phone: (phone || '').trim(),
       email: normalizedEmail,

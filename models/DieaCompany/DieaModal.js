@@ -6,6 +6,11 @@ const dieaCompanySchema = new mongoose.Schema({
     required: [true, 'Company name is required'],
     trim: true
   },
+  contactPersonName: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   address: {
     type: String,
     required: [true, 'Address is required'],

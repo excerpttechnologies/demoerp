@@ -1,6 +1,12 @@
 const Invoice = require('../../models/DieaCompany/Dieainvoice');
 const Company = require('../../models/DieaCompany/DieaModal');
-const { sendInvoiceEmail } = require('../../services/emailService');
+const EmailLog = require('../../models/DieaCompany/EmailLog');
+const {
+  buildInvoiceEmail,
+  buildInvoiceEmailSubject,
+  normalizeEmail,
+  sendInvoiceEmail,
+} = require('../../services/emailService');
 const PDFDocument = require('pdfkit');
 
 const mongoose = require('mongoose');
@@ -21,7 +27,8 @@ exports.createInvoice = async (req, res) => {
       previousBalance,
       currentBalance,
       amountInWords,
-        invoiceDate
+      invoiceDate,
+      dueDate,
     } = req.body;
 
     // Verify company exists
@@ -79,7 +86,8 @@ exports.createInvoice = async (req, res) => {
       previousBalance,
       currentBalance,
       amountInWords,
-        invoiceDate
+      invoiceDate,
+      dueDate: dueDate || undefined,
     });
     
     await invoice.save({ session });
@@ -301,155 +309,143 @@ exports.deleteInvoice = async (req, res) => {
   }
 };
 
-exports.sendInvoiceEmailById = async (req, res) => {
+const createInvoicePdf = async (invoice) => {
+  const pdfDoc = new PDFDocument({ margin: 50, size: 'A4' });
+  const chunks = [];
+  pdfDoc.on('data', (chunk) => chunks.push(chunk));
+  const completed = new Promise((resolve, reject) => {
+    pdfDoc.on('end', () => resolve(Buffer.concat(chunks)));
+    pdfDoc.on('error', reject);
+  });
+  pdfDoc.fontSize(20).text('Invoice', { align: 'center' });
+  pdfDoc.moveDown();
+  pdfDoc.fontSize(12).text(`Invoice No: ${invoice.invoiceNo}`);
+  pdfDoc.text(`Company: ${invoice.companyName}`);
+  pdfDoc.text(`Month: ${invoice.month}`);
+  pdfDoc.text(`Amount: INR ${invoice.amount}`);
+  pdfDoc.text(`Current balance: INR ${invoice.currentBalance}`);
+  pdfDoc.text(`Invoice date: ${invoice.invoiceDate || new Date().toISOString().slice(0, 10)}`);
+  if (invoice.dueDate) pdfDoc.text(`Due date: ${invoice.dueDate.toISOString().slice(0, 10)}`);
+  pdfDoc.end();
+  return completed;
+};
+
+const sendInvoiceMessage = async (req, res, isTest) => {
+  const recipient = normalizeEmail(isTest ? req.body?.to : '');
+  if (isTest && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
+    return res.status(400).json({ success: false, message: 'Enter a valid test recipient email.' });
+  }
+  const allowedTestRecipients = String(process.env.MAIL_TEST_RECIPIENTS || '')
+    .split(',').map(normalizeEmail).filter(Boolean);
+  if (isTest && !allowedTestRecipients.includes(recipient)) {
+    return res.status(403).json({
+      success: false,
+      message: 'This test recipient is not in the MAIL_TEST_RECIPIENTS allowlist.',
+    });
+  }
+  if (isTest) {
+    const recentTestCount = await EmailLog.countDocuments({
+      to: recipient,
+      isTest: true,
+      createdAt: { $gte: new Date(Date.now() - 60 * 60 * 1000) },
+    });
+    if (recentTestCount >= 3) {
+      return res.status(429).json({
+        success: false,
+        message: 'This test recipient has reached the limit of three emails per hour.',
+      });
+    }
+  }
+
+  let emailLog;
   try {
     const invoice = await Invoice.findById(req.params.id)
-      .populate('companyId', 'companyName email address phone');
-
+      .populate('companyId', 'companyName contactPersonName email address phone');
     if (!invoice) {
-      return res.status(404).json({
-        success: false,
-        message: 'Invoice not found',
-      });
+      return res.status(404).json({ success: false, message: 'Invoice not found.' });
     }
 
     const company = invoice.companyId || {};
-    const recipientEmail = company.email || invoice.companyEmail;
-
-    if (!recipientEmail) {
+    const recipientEmail = recipient || normalizeEmail(company.email || invoice.companyEmail);
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipientEmail)) {
       return res.status(400).json({
         success: false,
-        message: 'No email address found for this company.',
+        message: 'The invoice company does not have a valid recipient email address.',
       });
     }
 
-    let monthLabel = invoice.month;
-    const monthMatch = String(invoice.month).match(/(\d{4})-(\d{2})/);
-    if (monthMatch) {
-      const [year, month] = monthMatch.slice(1);
-      const monthDate = new Date(Number(year), Number(month) - 1, 1);
-      monthLabel = monthDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    let email;
+    try {
+      email = buildInvoiceEmail(invoice, company);
+    } catch (error) {
+      const subject = buildInvoiceEmailSubject(invoice);
+      await EmailLog.create({
+        invoiceId: invoice._id,
+        invoiceNo: invoice.invoiceNo,
+        to: recipientEmail,
+        subject,
+        status: 'failed',
+        error: error.message,
+        isTest,
+      });
+      throw error;
     }
-
-    const subject = `DEMAND NOTE - ${monthLabel.toUpperCase()}`;
-    const body = `Hi Sir,\n\nGreetings from DIEA!\n\nWe hope this message finds you well.\n\nKindly check below attachment for the month of ${monthLabel.toUpperCase()} - Demand Note.\n\nAll the process is done by Excerpt Technologies Pvt Ltd, who are specialized in web design and development, creating user-friendly, visually stunning websites. They are a leading ERP, e-commerce solution provider, who enhance sales and streamline operations. They are expertise in data analytics and BI report generation turns complex data into actionable insights for informed decision-making.\n\nAny information regarding the Demand Note will be sent through diea.acc.24@gmail.com\n\nIf you have any questions or require further assistance, feel free to reach out to the same mail id mentioned above.\n\nPlease reply to us once you receive this mail, as you know this is a new initiative taken by DIEA your cooperation is paramount to serve you better.\n\nBest regards,\nDIEA\n+91 9901371386\ndiea201112@gmail.com`;
-
-    const emailHtml = `
-      <div style="font-family: Arial, Helvetica, sans-serif; color: #1f2937; background: #f5f5f5; padding: 24px;">
-        <div style="max-width: 860px; margin: 0 auto; background: #ffffff; border: 1px solid #d9d9d9; padding: 0;">
-          <div style="padding: 18px 20px; border-bottom: 1px solid #d9d9d9; font-size: 14px; font-weight: 700; color: #1f2937; text-transform: uppercase;">
-            DEMAND NOTE - ${monthLabel.toUpperCase()}
-          </div>
-
-          <div style="padding: 24px 24px 12px 24px;">
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937;">Hi Sir,</p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937;">Greetings from DIEA!</p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937;">We hope this message finds you well.</p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937; line-height: 1.7;">
-              Kindly check below attachment for the month of <strong>${monthLabel.toUpperCase()}</strong> - Demand Note.
-            </p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937; line-height: 1.7;">
-              All the process is done by Excerpt Technologies Pvt Ltd, who are specialized in web design and development, creating user-friendly, visually stunning websites. They are a leading ERP, e-commerce solution provider, who enhance sales and streamline operations. They are expertise in data analytics and BI report generation turns complex data into actionable insights for informed decision-making.
-            </p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937; line-height: 1.7;">
-              Any information regarding the Demand Note will be sent through <a href="mailto:diea.acc.24@gmail.com" style="color:#1a73e8; text-decoration:none;">diea.acc.24@gmail.com</a>
-            </p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937; line-height: 1.7;">
-              If you have any questions or require further assistance, feel free to reach out to the same mail id mentioned above.
-            </p>
-            <div style="height: 8px;"></div>
-            <p style="margin: 0 0 18px; font-size: 15px; color: #1f2937; line-height: 1.7;">
-              Please reply to us once you receive this mail, as you know this is a new initiative taken by DIEA your cooperation is paramount to serve you better.
-            </p>
-            <div style="height: 18px;"></div>
-            <p style="margin: 0 0 8px; font-size: 15px; color: #1f2937;">Best regards,</p>
-            <p style="margin: 0; font-size: 15px; color: #1f2937; font-weight: 700;">DIEA</p>
-            <p style="margin: 4px 0 0; font-size: 15px; color: #1f2937;">+91 9901371386</p>
-            <p style="margin: 0; font-size: 15px; color: #1f2937;"><a href="mailto:diea201112@gmail.com" style="color:#1a73e8; text-decoration:none;">diea201112@gmail.com</a></p>
-          </div>
-        </div>
-      </div>
-    `;
-
-    const { attachmentBase64, attachmentName } = req.body || {};
-    let pdfBuffer = null;
-
-    if (attachmentBase64) {
-      pdfBuffer = Buffer.from(attachmentBase64, 'base64');
+    let pdfBuffer;
+    if (req.body?.attachmentBase64) {
+      const base64 = String(req.body.attachmentBase64).replace(/^data:application\/pdf;base64,/i, '');
+      if (!/^[A-Za-z0-9+/]+={0,2}$/.test(base64)) {
+        return res.status(400).json({ success: false, message: 'Invalid PDF attachment data.' });
+      }
+      pdfBuffer = Buffer.from(base64, 'base64');
     } else {
-      const pdfDoc = new PDFDocument({ margin: 50, size: 'A4' });
-      const pdfChunks = [];
-
-      pdfDoc.on('data', (chunk) => pdfChunks.push(chunk));
-
-      await new Promise((resolve, reject) => {
-        pdfDoc.on('end', () => {
-          pdfBuffer = Buffer.concat(pdfChunks);
-          resolve();
-        });
-        pdfDoc.on('error', reject);
-
-        pdfDoc.fontSize(20).text('DIEA Demand Note', { align: 'center' });
-        pdfDoc.moveDown();
-        pdfDoc.fontSize(12).text(`Invoice No: ${invoice.invoiceNo}`);
-        pdfDoc.text(`Company: ${invoice.companyName || company.companyName || 'N/A'}`);
-        pdfDoc.text(`Month: ${invoice.month}`);
-        pdfDoc.text(`Amount: ₹${invoice.amount}`);
-        pdfDoc.text(`Current Balance: ₹${invoice.currentBalance}`);
-        pdfDoc.text(`Invoice Date: ${invoice.invoiceDate || new Date().toISOString().split('T')[0]}`);
-        pdfDoc.moveDown();
-        pdfDoc.text('This is a computer generated invoice.');
-        pdfDoc.end();
-      });
+      pdfBuffer = await createInvoicePdf(invoice);
     }
 
-    const finalAttachmentName = attachmentName || `Demand_Note_${invoice.invoiceNo}.pdf`;
-
-    const emailResult = await sendInvoiceEmail({
+    emailLog = await EmailLog.create({
+      invoiceId: invoice._id,
+      invoiceNo: invoice.invoiceNo,
       to: recipientEmail,
-      subject,
-      text: body,
-      html: emailHtml,
-      attachments: [{
-        filename: finalAttachmentName,
-        content: pdfBuffer,
-        contentType: 'application/pdf',
-      }],
+      subject: email.subject,
+      status: 'pending',
+      isTest,
     });
 
-    if (emailResult.success) {
+    try {
+      const result = await sendInvoiceEmail({
+        to: recipientEmail,
+        subject: email.subject,
+        text: email.text,
+        html: email.html,
+        config: email.config,
+        attachments: [{ filename: email.filename, content: pdfBuffer }],
+      });
+      await EmailLog.updateOne({ _id: emailLog._id }, {
+        status: 'sent',
+        messageId: result.messageId,
+        providerResponse: result.response,
+        sentAt: new Date(),
+      });
       return res.status(200).json({
         success: true,
-        message: 'Invoice email sent successfully with attachment.',
+        message: isTest ? 'Test invoice email sent.' : 'Invoice email sent.',
+        messageId: result.messageId,
       });
-    }
-
-    if (emailResult.type === 'SMTP_NOT_CONFIGURED') {
-      const mailtoUrl = `mailto:${encodeURIComponent(recipientEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-      return res.status(200).json({
-        success: false,
-        message: 'SMTP is not configured. Open the email draft in your mail app to send it manually.',
-        mailtoUrl,
-        fallback: true,
+    } catch (error) {
+      await EmailLog.updateOne({ _id: emailLog._id }, {
+        status: 'failed',
+        error: error.message,
+        providerResponse: error.response || '',
       });
+      throw error;
     }
-
-    return res.status(500).json({
-      success: false,
-      message: emailResult.message || 'Failed to send invoice email.',
-      type: emailResult.type || 'SMTP_SEND_FAILED',
-    });
   } catch (error) {
-    console.error('Error sending invoice email:', error);
+    console.error('Invoice email failed:', error.message);
     return res.status(500).json({
       success: false,
       message: error.message || 'Failed to send invoice email.',
     });
   }
 };
+
+exports.sendInvoiceEmailById = (req, res) => sendInvoiceMessage(req, res, false);
+exports.sendInvoiceTestEmailById = (req, res) => sendInvoiceMessage(req, res, true);

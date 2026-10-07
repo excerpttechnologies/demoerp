@@ -10,7 +10,8 @@ const {
   getInvoicesByCompany,
   updateInvoice,
   deleteInvoice,
-  sendInvoiceEmailById
+  sendInvoiceEmailById,
+  sendInvoiceTestEmailById
 } = require('../../controllers/diea/Dieainvoice');
 
 // Invoice CRUD operations
@@ -21,6 +22,7 @@ router.get('/check/:invoiceNo', checkInvoiceNumberExists);
 router.get('/number/:invoiceNo', getInvoiceByNumber);
 router.get('/company/:companyId', getInvoicesByCompany);
 router.post('/:id/send-mail', sendInvoiceEmailById);
+router.post('/:id/send-test-mail', sendInvoiceTestEmailById);
 router.get('/:id', getInvoiceById);
 router.put('/:id', updateInvoice);
 router.delete('/:id', deleteInvoice);

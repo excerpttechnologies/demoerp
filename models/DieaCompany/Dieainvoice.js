@@ -10,6 +10,10 @@ const invoiceSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  dueDate: {
+    type: Date,
+    default: null
+  },
   companyId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CompanyDiea',

@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const JWT_SECRET='secret'
 const mongoose = require('mongoose');
 const Employee=require('../models/hrms/employee')
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // exports.createUser = async (req, res) => {
 //   try {
 //     const { username, email, password, companies, phone, address, roles } = req.body;
@@ -32,7 +33,6 @@ const Employee=require('../models/hrms/employee')
 exports.createUser = async (req, res) => {
   try {
     const { username, email, password, companies, phone, address, roles } = req.body;
-    console.log('Creating user with data:', req.body);
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = new User({ username, email, password: hashedPassword, phone, address, roles });
@@ -217,11 +217,15 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { identifier, password } = req.body;
-    console.log('Login attempt with identifier:', identifier, password);
+    const normalizedIdentifier = typeof identifier === 'string' ? identifier.trim() : '';
+    if (!normalizedIdentifier || typeof password !== 'string' || !password) {
+      return res.status(400).json({ error: 'Email/phone and password are required.' });
+    }
 
-    // Check if identifier is email or phone
-    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(identifier);
-    const query = isEmail ? { email: identifier } : { phone: identifier };
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedIdentifier);
+    const query = isEmail
+      ? { email: new RegExp(`^\\s*${escapeRegExp(normalizedIdentifier)}\\s*$`, 'i') }
+      : { phone: normalizedIdentifier };
 
     // Try finding in User schema
     let user = await User.findOne(query);
