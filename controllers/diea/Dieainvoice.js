@@ -23,6 +23,7 @@ exports.createInvoice = async (req, res) => {
       companyAddress,
       particulars,
       month,
+      shedNo,
       amount,
       previousBalance,
       currentBalance,
@@ -82,6 +83,7 @@ exports.createInvoice = async (req, res) => {
       companyAddress,
       particulars,
       month,
+      shedNo,
       amount,
       previousBalance,
       currentBalance,
@@ -145,6 +147,32 @@ exports.getAllInvoices = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message
+    });
+  }
+};
+
+exports.getInvoiceEmailStatuses = async (req, res) => {
+  try {
+    const latestEmailLogs = await EmailLog.aggregate([
+      { $match: { isTest: false } },
+      { $sort: { createdAt: -1, _id: -1 } },
+      {
+        $group: {
+          _id: '$invoiceId',
+          status: { $first: '$status' },
+        },
+      },
+    ]);
+
+    const statuses = Object.fromEntries(
+      latestEmailLogs.map((log) => [String(log._id), log.status]),
+    );
+
+    res.status(200).json({ success: true, data: statuses });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to load invoice email statuses.',
     });
   }
 };
@@ -257,7 +285,35 @@ exports.updateInvoice = async (req, res) => {
   try {
     // Remove invoiceNo from update data to prevent changes
     const { invoiceNo, ...updateData } = req.body;
-    
+
+    const existingInvoice = await Invoice.findById(req.params.id);
+    if (!existingInvoice) {
+      return res.status(404).json({
+        success: false,
+        message: 'Invoice not found'
+      });
+    }
+
+    const companyId = updateData.companyId || existingInvoice.companyId;
+    const month = updateData.month || existingInvoice.month;
+    const companyChanged = String(companyId) !== String(existingInvoice.companyId);
+    const monthChanged = month !== existingInvoice.month;
+
+    if (companyChanged || monthChanged) {
+      const duplicateInvoice = await Invoice.exists({
+        _id: { $ne: existingInvoice._id },
+        companyId,
+        month
+      });
+
+      if (duplicateInvoice) {
+        return res.status(409).json({
+          success: false,
+          message: 'Invoice for this company and month has already been generated.'
+        });
+      }
+    }
+
     const invoice = await Invoice.findByIdAndUpdate(
       req.params.id,
       updateData,

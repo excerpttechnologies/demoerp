@@ -36,6 +36,11 @@ const invoiceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  shedNo: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   amount: {
     type: Number,
     required: true

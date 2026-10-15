@@ -3,6 +3,7 @@ const router = express.Router();
 const {
   createInvoice,
   getAllInvoices,
+  getInvoiceEmailStatuses,
   getInvoiceById,
   getInvoiceByNumber,
   checkInvoiceNumberExists,
@@ -17,6 +18,7 @@ const {
 // Invoice CRUD operations
 router.post('/', createInvoice);
 router.get('/', getAllInvoices);
+router.get('/email-statuses', getInvoiceEmailStatuses);
 router.get('/next-number', getNextInvoiceNumber);
 router.get('/check/:invoiceNo', checkInvoiceNumberExists);
 router.get('/number/:invoiceNo', getInvoiceByNumber);
