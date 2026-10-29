@@ -97,25 +97,37 @@ const buildInvoiceEmail = (invoice) => {
   const invoiceNo = String(invoice.invoiceNo);
   const month = formatMonth(invoice.month);
   const subject = buildInvoiceEmailSubject(invoice);
+  const monthForBody = month.toLocaleUpperCase('en-US');
   const paragraphs = [
-    { text: 'Hello Sir,', html: '<strong>Hello Sir,</strong>' },
-    { text: 'I hope you are doing well.' },
+    { text: 'Hi Sir,' },
+    { text: 'Greetings from DIEA!!' },
+    { text: 'We hope this message finds you well.' },
     {
-      text: `Please find attached the Demand Note for ${month} (Invoice ${invoiceNo}) from DIEA.`,
-      html: `Please find attached the Demand Note for ${escapeHtml(month)} (Invoice ${escapeHtml(invoiceNo)}) from DIEA.`,
+      text: `Kindly check below attachment for the month of ${monthForBody} - Demand Note.`,
+      html: `Kindly check below attachment for the month of ${escapeHtml(monthForBody)} - Demand Note.`,
     },
     {
-      text: 'For any questions about the Demand Note, you can write to us at diea.acc.24@gmail.com. We will be happy to help.',
-      html: 'For any questions about the Demand Note, you can write to us at <a href="mailto:diea.acc.24@gmail.com">diea.acc.24@gmail.com</a>. We will be happy to help.',
+      text: 'All the process is done by Excerpt Technologies Pvt Ltd, who are specialized in web design and development, creating user-friendly, visually stunning websites. They are a leading ERP, e-commerce solution provider, who enhance sales and streamline operations. They are expertise in data analytics and BI report generation turns complex data into actionable insights for informed decision-making.',
     },
     {
-      text: 'Regards,\nDIEA\n+91 9901371386\ndiea.acc.24@gmail.com',
-      html: 'Regards,<br>\nDIEA<br>\n+91 9901371386<br>\ndiea.acc.24@gmail.com',
+      text: 'Any information regarding the Demand Note will be sent through diea.acc.24@gmail.com',
+      html: 'Any information regarding the Demand Note will be sent through <a href="mailto:diea.acc.24@gmail.com">diea.acc.24@gmail.com</a>',
+    },
+    {
+      text: 'If you have any questions or require further assistance, feel free to reach out to the same mail id mentioned above.',
+    },
+    {
+      text: 'Please reply to us once you receive this mail, as you know this is a new initiative taken by DIEA your cooperation is paramount to serve you better.',
+    },
+    {
+      text: 'Best regards,\nDIEA\n+91 9901371386\ndiea201112@gmail.com',
+      html: 'Best regards,<br>\nDIEA<br>\n+91 9901371386<br>\n<a href="mailto:diea201112@gmail.com">diea201112@gmail.com</a>',
     },
   ];
-  const attribution = 'This Demand Note was prepared and sent through the DIEA accounts system, built by Excerpt Technologies Pvt Ltd (ERP, web and data solutions).';
-  const text = `${paragraphs.map(({ text: paragraph }) => paragraph).join('\n\n')}\n\n---\n${attribution}`;
-  const html = `${paragraphs.map(({ text: paragraph, html: htmlParagraph }) => `<p>${htmlParagraph || escapeHtml(paragraph)}</p>`).join('')}<hr><p style="font-size:12px;color:#666;">${escapeHtml(attribution)}</p>`;
+  const text = paragraphs.map(({ text: paragraph }) => paragraph).join('\n\n');
+  const html = paragraphs
+    .map(({ text: paragraph, html: htmlParagraph }) => `<p>${htmlParagraph || escapeHtml(paragraph)}</p>`)
+    .join('');
   const monthParts = month.match(/^([A-Za-z]+)\s+(\d{4})$/);
   const monthForFilename = monthParts
     ? `${monthParts[1].slice(0, 3)}${monthParts[2]}`
